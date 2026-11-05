@@ -32,6 +32,7 @@ function finish(){
  var lang=$("lang").value,lines=S[lang],n=Math.max(3,Math.min(14,Math.round(dur/6))),sp=$("mode").selectedIndex===0;
  segs=[];var step=dur/n;
  for(var k=0;k<n;k++)segs.push({t:k*step,s:sp?"Speaker "+(k%2+1):"",x:lines[k%lines.length]});
+ if(window.__real){segs=window.__real.slice();window.__real=null}
  $("bar").style.display="none";$("fill").style.width="0";$("st").textContent="Done ✓";$("go").disabled=false;
  var box=$("segs");box.textContent="";
  segs.forEach(function(g){var r=document.createElement("div");r.className="seg";var a=document.createElement("div");a.className="ts";a.textContent=fmt(g.t);var b=document.createElement("div");if(g.s){var s=document.createElement("div");s.className="sp";s.textContent=g.s;b.appendChild(s)}var x=document.createElement("div");x.textContent=g.x;b.appendChild(x);r.appendChild(a);r.appendChild(b);box.appendChild(r)});
@@ -246,10 +247,17 @@ $('tdl').onclick=function(e){e.preventDefault();if(window.__vb)window.SAVE(windo
 (function(){
 window.AI=function(q){var c=window.claude;if(!c||!c.use)return Promise.reject(new Error('na'));return c.use('sample').then(function(s){if(!s)throw new Error('na');return s(q)}).then(function(r){return r.text})};
 var I={s:'Summarize this transcript in 2 or 3 sentences.',a:'List the action items from this transcript as short bullet lines starting with the • character. If there are none, say so.',p:'List the 3 to 5 key points of this transcript as short bullet lines starting with the • character.'};
+function basic(k,t){var P=t.split('\n').map(function(x){x=x.trim();var i=x.indexOf('] ');if(x.charAt(0)==='['&&i>-1)x=x.slice(i+2);return x}).filter(Boolean);
+if(P.length<3)P=t.split('. ').map(function(x){return x.trim()}).filter(Boolean);
+var note='\n\n(Basic mode: no AI connected.)';
+if(k==='s')return 'Summary: '+P.slice(0,2).join(' ')+' ... '+P[P.length-1]+note;
+if(k==='p')return 'Key points:\n'+P.slice().sort(function(a,b){return b.length-a.length}).slice(0,4).map(function(x){return '• '+x}).join('\n')+note;
+var W=['need','should','must','will','send','check','assign','deadline','follow up','remember','todo','to-do'],A=P.filter(function(x){var l=x.toLowerCase();return W.some(function(w){return l.indexOf(w)>-1})});
+return 'Action items:\n'+(A.length?A.map(function(x){return '• '+x}).join('\n'):'None found.')+note}
 function wire(row,box,get){Array.prototype.forEach.call(row.children,function(b){b.onclick=function(){var t=get();box.style.display='block';
 if(!t){box.textContent='Nothing to analyze yet.';return}
 Array.prototype.forEach.call(row.children,function(x){x.classList.toggle('on',x===b)});box.textContent='Thinking…';
-AI(I[b.dataset.k]+' Reply in plain text only, no markdown, no preamble.\n\nTranscript:\n'+t).then(function(x){box.textContent=x.trim()},function(){box.textContent='AI is not available here. Open this page in Claude and allow it when asked.'})}})}
+AI(I[b.dataset.k]+' Reply in plain text only, no markdown, no preamble.\n\nTranscript:\n'+t).then(function(x){box.textContent=x.trim()},function(){box.textContent=basic(b.dataset.k,t)})}})}
 wire($('ai'),$('aib'),function(){return segs.length?txt():''});
 wire($('ai2'),$('aib2'),function(){return $('live').textContent.trim()});
 })();
