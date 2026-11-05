@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b8f02a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Voxly – AI Transcriber</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body><div class='aur'><i></i><i></i><i></i></div>
+<div class="wrap">
+<nav><div class="sp" id="sp"></div><div class="logo"><i>V</i>oxly</div><div class='links'><a href='#app'>Transcribe</a><a href='#tv'>Video</a><a href='#pricing'>Pricing</a></div><button class="btn ghost" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">Try it free</button></nav>
+<div class='hero'><span class='pill'>Transcription + text to video</span>
+<h1>Audio &amp; video to <span>text</span>, in seconds.</h1><canvas id='wave'></canvas></div>
+<p class="sub">Drop in a recording, lecture, or interview and get a clean, timestamped transcript. Accurate English transcripts with speaker labels and timestamps. (Demo – transcripts are simulated.)</p>
+
+<div class='mq'><div class='mqt' id='mqt'></div></div>
+<div class="card" id="app">
+<div class="drop" id="drop"><b>Drop an audio or video file here</b><small>MP3, WAV, M4A, MP4, MOV, WEBM – or tap to browse</small></div>
+<input type="file" id="fi" accept="audio/*,video/*" hidden>
+<div class="file" id="finfo"></div>
+<div class="row">
+<select id="lang"><option value="en">English (US)</option><option value="en">English (UK)</option><option value="en">English (AU)</option></select>
+<select id="mode"><option>Speaker labels: On</option><option>Speaker labels: Off</option></select>
+<button class="btn" id="go" disabled>Transcribe</button><button class="btn ghost" id="mic">🎤 Live dictate</button>
+</div>
+<div class="bar" id="bar"><div id="fill"></div></div>
+<div class="status" id="st"></div><div class="live" id="live" style="display:none"></div><div class='tabs' id='ai2' style='display:none;margin-top:10px'><button class='tab' data-k='s'>✨ Summary</button><button class='tab' data-k='a'>✅ Action items</button><button class='tab' data-k='p'>🔑 Key points</button></div><div class='ysum' id='aib2' style='display:none;white-space:pre-wrap'></div>
+
+<div id="out">
+<div class="hdr"><h3>Transcript</h3>
+<div class="row" style="margin:0"><button class="btn ghost" id="cp">Copy</button><button class="btn ghost" id="dt">.txt</button><button class="btn ghost" id="ds">.srt</button></div></div>
+<div class="badges" id="badges"></div><div class='tabs' id='ai'><button class='tab' data-k='s'>✨ Summary</button><button class='tab' data-k='a'>✅ Action items</button><button class='tab' data-k='p'>🔑 Key points</button></div><div class='ysum' id='aib' style='display:none;white-space:pre-wrap'></div>
+<div id="segs"></div>
+</div>
+</div>
+
+<div class="card hist" style="margin-top:14px;display:none" id="hcard"><b>Recent files</b><div id="hist"></div></div>
+
+<h2>Link to text &amp; translator <span class='pill'>New</span></h2>
+<div class='card'>
+<p class='sub' style='margin:0 0 14px'>Paste any text and AI translates it live. Paste a link to preview how a lecture link will look (sample result).</p>
+<div class='row' style='margin-top:0'><input type='text' id='yl' autocomplete='off' placeholder='Paste a link, or paste any text to translate'><select id='yt'><option value='fil'>Filipino</option><option value='es'>Spanish</option><option value='fr'>French</option><option value='ja'>Japanese</option><option value='ko'>Korean</option><option value='zh'>Chinese</option><option value='de'>German</option><option value='pt'>Portuguese</option><option value='it'>Italian</option></select><button class='btn' id='yg'>Translate</button></div>
+<div class='bar' id='yb'><div id='yf'></div></div>
+<div class='status' id='ys'></div>
+<div id='yo' style='display:none'><div class='badges' id='yba'></div><div class='ysum' id='ysm'></div><div id='yrows'></div><div class='row'><button class='btn ghost' id='ycp'>Copy translation</button><button class='btn ghost' id='ydl'>Download .txt</button></div></div>
+</div>
+<h2 id='tv'>Text to video</h2>
+<div class='card'>
+<textarea id='tp' rows='3' maxlength='160' placeholder='Describe your video, for example: A neon city at night with flying cars and glowing rain'></textarea>
+<div class='row'><button class='tab' onclick='$("tp").value=this.textContent'>A neon city at night with flying cars</button><button class='tab' onclick='$("tp").value=this.textContent'>Sunrise over calm ocean waves</button><button class='tab' onclick='$("tp").value=this.textContent'>Launch day for our new app</button></div>
+<div class='row'><select id='tsty'><option>Neon</option><option>Sunset</option><option>Ocean</option><option>Mono</option></select><select id='tasp'><option value='16:9'>16:9 Landscape</option><option value='9:16'>9:16 Vertical</option><option value='1:1'>1:1 Square</option></select><select id='tdur'><option value='5'>5 seconds</option><option value='8'>8 seconds</option><option value='12'>12 seconds</option></select><button class='btn' id='tgo'>Generate video</button></div>
+<div class='bar' id='tbar'><div id='tfill'></div></div>
+<div class='status' id='tst'></div>
+<div id='tout' style='display:none'><canvas id='tcv'></canvas><video id='tvid' controls playsinline loop></video><div class='row'><a class='btn' id='tdl' style='display:none'>Download video</a></div></div>
+</div>
+<div class='stats rv'><div class='card'><b>98.6%</b><span>word accuracy</span></div><div class='card'><b>30+</b><span>languages on roadmap</span></div><div class='card'><b>10x</b><span>faster than typing</span></div><div class='card'><b>2 min</b><span>per hour of audio</span></div></div>
+<h2>Everything you need</h2>
+<div class='bento'>
+<div class='card b rv'><div class='ic'>🎧</div><h4>Audio &amp; video</h4><p>MP3, WAV, M4A, MP4, MOV and more. Just drop the file in.</p></div>
+<div class='card b rv'><div class='ic'>🗣️</div><h4>Speaker labels</h4><p>Know who said what in meetings and interviews.</p></div>
+<div class='card b rv'><div class='ic'>⏱️</div><h4>Timestamps &amp; subtitles</h4><p>Export SRT captions ready for YouTube and video editors.</p></div>
+<div class='card b rv'><div class='ic'>🎤</div><h4>Live dictation</h4><p>Talk and watch the words appear. This one runs for real in your browser.</p></div>
+<div class='card b w rv'><div class='ic'>🎬</div><h4>Text to video</h4><p>Describe an idea and get a ready-to-share video in seconds.</p></div>
+</div>
+<h2>How it works</h2>
+<div class='steps'>
+<div class='card rv'><div class='n'>01</div><h4>Upload</h4><p style='color:var(--mute);margin:0'>Drop in any recording or video.</p></div>
+<div class='card rv'><div class='n'>02</div><h4>Transcribe</h4><p style='color:var(--mute);margin:0'>AI turns speech into text with timestamps.</p></div>
+<div class='card rv'><div class='n'>03</div><h4>Export</h4><p style='color:var(--mute);margin:0'>Copy it, or download TXT and SRT.</p></div>
+</div>
+<h2>Made for the way you work</h2>
+<p class='sub'>Pick your role and watch Voxly turn raw audio into something useful.</p>
+<div class='card rv uc'><div class='tabs' id='utabs'></div>
+<div class='ucg'><div><h3 id='uh'></h3><p id='ud' class='sub' style='margin:8px 0 14px'></p><div class='chips' id='uc'></div></div>
+<div class='term'><div class='dots'><i></i><i></i><i></i><span id='uf'></span></div><div class='tt' id='ut'></div></div></div></div>
+<h2 id='pricing'>Pricing</h2>
+<div class='row' style='margin:0 0 14px'><button class='tab on' id='pm'>Monthly</button><button class='tab' id='py'>Yearly · save 20%</button></div>
+<div class="grid">
+<div class="card plan"><h4>Free</h4><div class="p">$0</div><ul><li>30 min / month</li><li>English transcription</li><li>TXT export</li></ul><button class="btn ghost">Get started</button></div>
+<div class="card plan hot"><h4>Pro</h4><div class="p"><span data-m='9' data-y='7'>$9</span><small style="font-size:14px;font-weight:500">/mo</small></div><ul><li>20 hours / month</li><li>Speaker labels</li><li>SRT &amp; TXT export</li></ul><button class="btn">Go Pro</button></div>
+<div class="card plan"><h4>Team</h4><div class="p"><span data-m='39' data-y='31'>$39</span><small style="font-size:14px;font-weight:500">/mo</small></div><ul><li>100 hours / month</li><li>Shared workspace</li><li>API access</li></ul><button class="btn ghost">Contact us</button></div>
+</div>
+<div class='card cta rv'><h2>Need an app like this built?</h2><p style='margin:0 0 16px'>Web apps, dashboards, and AI tools, designed and coded end to end.</p><button class='btn' onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">Try the live demo</button></div>
+<h2>FAQ</h2>
+<details><summary>Which files can I upload?</summary><p>Most audio and video formats, including MP3, WAV, M4A, MP4, MOV and WEBM.</p></details>
+<details><summary>Is my audio private?</summary><p>In this demo, files stay in your browser and are never uploaded.</p></details>
+<details><summary>Does live dictation work on my phone?</summary><p>Yes, on browsers that support speech recognition, such as Chrome on Android and Safari on iPhone.</p></details>
+<footer>© 2026 Voxly – a demo project</footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
